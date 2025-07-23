@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useData } from '../contexts/DataContext';
-import { KCCApplication as KCCApplicationType, Member } from '../types';
+import { KCCApplication as KCCApplicationType } from '../types';
 import { Save, FileText, ArrowLeft, ArrowRight, X, Search } from 'lucide-react';
 
 const KCCApplication: React.FC = () => {
@@ -69,33 +69,34 @@ const KCCApplication: React.FC = () => {
     setIsSearching(true);
     setMemberSearchError('');
 
-    // Simulate API call or search in local data
+    // Search in local member data
     setTimeout(() => {
-      const foundMember = members.find(m => m.memberNumber === memberNumber);
+      const foundMember = members.find(m => m.basicInfo.memberNumber === memberNumber);
       
       if (foundMember) {
         setFormData(prev => ({
           ...prev,
           memberDetails: {
-            memberNumber: foundMember.memberNumber,
-            name: foundMember.name,
-            fatherName: foundMember.fatherName,
-            address: foundMember.address,
-            village: foundMember.village,
-            pinCode: foundMember.pinCode,
-            phone: foundMember.phone,
-            email: foundMember.email || '',
+            memberNumber: foundMember.basicInfo.memberNumber,
+            name: foundMember.basicInfo.memberName,
+            fatherName: foundMember.basicInfo.fatherName,
+            address: foundMember.basicInfo.address,
+            village: foundMember.basicInfo.address.split(',')[0] || '', // Extract village from address
+            pinCode: '', // You might want to add pinCode to Member type
+            phone: foundMember.basicInfo.mobile,
+            email: '', // You might want to add email to Member type
           },
           documents: {
             ...prev.documents,
-            voterId: foundMember.voterId || '',
-            aadhaar: foundMember.aadhaar || '',
-            pan: foundMember.pan || '',
-            rationCard: foundMember.rationCard || '',
-            sbNo: foundMember.sbNo || '',
-            dob: foundMember.dob || '',
+            voterId: '',
+            aadhaar: foundMember.basicInfo.aadhar || '',
+            pan: foundMember.basicInfo.pan || '',
+            rationCard: '',
+            sbNo: '',
+            dob: foundMember.basicInfo.dob || '',
           }
         }));
+        setMemberSearchError('');
       } else {
         setMemberSearchError('Member not found');
       }
